@@ -20,9 +20,11 @@ struct SettingsView: View {
                     .keyboardType(.URL)
                     .autocorrectionDisabled()
 
-                Text("For a physical iPhone, use your Mac LAN IP, for example http://192.168.x.x:8080. Mac and iPhone must be on the same Wi-Fi.")
+                #if DEBUG
+                Text("For simulator development, localhost points to the backend running on this Mac.")
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+                #endif
 
                 Button {
                     Task { await testConnection() }
@@ -44,8 +46,17 @@ struct SettingsView: View {
                     config.resetBaseURL()
                     connectionResult = nil
                 } label: {
+                    Label("Use Default", systemImage: "arrow.counterclockwise")
+                }
+
+                #if DEBUG
+                Button {
+                    config.useLocalhostBaseURL()
+                    connectionResult = nil
+                } label: {
                     Label("Use Localhost", systemImage: "arrow.counterclockwise")
                 }
+                #endif
             }
 
             Section("Session") {

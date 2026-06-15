@@ -7,8 +7,11 @@ final class VehicleViewModel: ObservableObject {
     @Published var selectedVehicle: Vehicle?
     @Published var legalDocuments: [LegalDocument] = []
     @Published var maintenance: [MaintenanceItem] = []
+    @Published var notificationPreferences: [NotificationPreference] = []
     @Published var fuelReceipts: [FuelReceipt] = []
     @Published var expenses: [Expense] = []
+    @Published var tireSets: [TireSet] = []
+    @Published var equipment: [EquipmentItem] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
 
@@ -42,14 +45,20 @@ final class VehicleViewModel: ObservableObject {
             async let vehicle = apiClient.fetchVehicle(id: vehicleId)
             async let legal = apiClient.fetchLegalDocuments(vehicleId: vehicleId)
             async let maintenance = apiClient.fetchMaintenance(vehicleId: vehicleId)
+            async let notificationPreferences = apiClient.fetchNotificationPreferences(vehicleId: vehicleId)
             async let receipts = apiClient.fetchFuelReceipts(vehicleId: vehicleId)
             async let expenses = apiClient.fetchExpenses(vehicleId: vehicleId)
+            async let tireSets = apiClient.fetchTireSets(vehicleId: vehicleId)
+            async let equipment = apiClient.fetchEquipment(vehicleId: vehicleId)
 
             selectedVehicle = try await vehicle
             legalDocuments = (try? await legal) ?? []
             self.maintenance = (try? await maintenance) ?? []
+            self.notificationPreferences = (try? await notificationPreferences) ?? []
             fuelReceipts = (try? await receipts) ?? []
             self.expenses = (try? await expenses) ?? []
+            self.tireSets = (try? await tireSets) ?? []
+            self.equipment = (try? await equipment) ?? []
         } catch {
             errorMessage = error.localizedDescription
         }
@@ -76,6 +85,10 @@ final class VehicleViewModel: ObservableObject {
             .filter { $0.type == type }
             .sorted { ($0.endDate ?? "") > ($1.endDate ?? "") }
             .first
+    }
+
+    func notificationPreference(entityType: NotificationPreferenceEntityType, entityId: UUID) -> NotificationPreference? {
+        notificationPreferences.first { $0.entityType == entityType && $0.entityId == entityId }
     }
 
     func nextMaintenance() -> MaintenanceItem? {

@@ -96,8 +96,57 @@ final class ApiClient {
         try await request("/api/vehicles/\(vehicleId.uuidString)/legal-documents")
     }
 
+    func createLegalDocument(vehicleId: UUID, request: LegalDocumentRequest) async throws -> LegalDocument {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/\(vehicleId.uuidString)/legal-documents", method: "POST", body: data)
+    }
+
+    func updateLegalDocument(id: UUID, request: LegalDocumentRequest) async throws -> LegalDocument {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/legal-documents/\(id.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteLegalDocument(id: UUID) async throws {
+        try await requestNoContent("/api/legal-documents/\(id.uuidString)", method: "DELETE")
+    }
+
     func fetchMaintenance(vehicleId: UUID) async throws -> [MaintenanceItem] {
         try await request("/api/vehicles/\(vehicleId.uuidString)/maintenance")
+    }
+
+    func createMaintenance(vehicleId: UUID, request: MaintenanceRequest) async throws -> MaintenanceItem {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/\(vehicleId.uuidString)/maintenance", method: "POST", body: data)
+    }
+
+    func updateMaintenance(id: UUID, request: MaintenanceRequest) async throws -> MaintenanceItem {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/maintenance/\(id.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteMaintenance(id: UUID) async throws {
+        try await requestNoContent("/api/maintenance/\(id.uuidString)", method: "DELETE")
+    }
+
+    func fetchNotificationPreferences(vehicleId: UUID) async throws -> [NotificationPreference] {
+        try await request("/api/vehicles/\(vehicleId.uuidString)/notification-preferences")
+    }
+
+    func fetchNotificationPreference(entityType: NotificationPreferenceEntityType, entityId: UUID) async throws -> NotificationPreference? {
+        do {
+            return try await request("/api/notification-preferences/\(entityType.rawValue)/\(entityId.uuidString)")
+        } catch ApiError.requestFailed(let status, _) where status == 404 {
+            return nil
+        }
+    }
+
+    func saveNotificationPreference(entityType: NotificationPreferenceEntityType, entityId: UUID, request: NotificationPreferenceRequest) async throws -> NotificationPreference {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/notification-preferences/\(entityType.rawValue)/\(entityId.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteNotificationPreference(entityType: NotificationPreferenceEntityType, entityId: UUID) async throws {
+        try await requestNoContent("/api/notification-preferences/\(entityType.rawValue)/\(entityId.uuidString)", method: "DELETE")
     }
 
     func fetchFuelReceipts(vehicleId: UUID) async throws -> [FuelReceipt] {
@@ -106,6 +155,56 @@ final class ApiClient {
 
     func fetchExpenses(vehicleId: UUID) async throws -> [Expense] {
         try await request("/api/vehicles/\(vehicleId.uuidString)/expenses")
+    }
+
+    func createExpense(vehicleId: UUID, request: ExpenseRequest) async throws -> Expense {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/\(vehicleId.uuidString)/expenses", method: "POST", body: data)
+    }
+
+    func updateExpense(id: UUID, request: ExpenseRequest) async throws -> Expense {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/expenses/\(id.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteExpense(id: UUID) async throws {
+        try await requestNoContent("/api/expenses/\(id.uuidString)", method: "DELETE")
+    }
+
+    func fetchTireSets(vehicleId: UUID) async throws -> [TireSet] {
+        try await request("/api/vehicles/\(vehicleId.uuidString)/tire-sets")
+    }
+
+    func createTireSet(vehicleId: UUID, request: TireSetRequest) async throws -> TireSet {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/\(vehicleId.uuidString)/tire-sets", method: "POST", body: data)
+    }
+
+    func updateTireSet(id: UUID, request: TireSetRequest) async throws -> TireSet {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/tire-sets/\(id.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteTireSet(id: UUID) async throws {
+        try await requestNoContent("/api/tire-sets/\(id.uuidString)", method: "DELETE")
+    }
+
+    func fetchEquipment(vehicleId: UUID) async throws -> [EquipmentItem] {
+        try await request("/api/vehicles/\(vehicleId.uuidString)/equipment")
+    }
+
+    func createEquipment(vehicleId: UUID, request: EquipmentRequest) async throws -> EquipmentItem {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/\(vehicleId.uuidString)/equipment", method: "POST", body: data)
+    }
+
+    func updateEquipment(id: UUID, request: EquipmentRequest) async throws -> EquipmentItem {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/equipment/\(id.uuidString)", method: "PUT", body: data)
+    }
+
+    func deleteEquipment(id: UUID) async throws {
+        try await requestNoContent("/api/equipment/\(id.uuidString)", method: "DELETE")
     }
 
     func createFuelReceipt(vehicleId: UUID, draft: FuelReceiptDraft) async throws -> FuelReceipt {
@@ -176,6 +275,21 @@ final class ApiClient {
         return try decodeResponse(data: data, response: response)
     }
 
+    private func requestNoContent(
+        _ path: String,
+        method: String,
+        body: Data? = nil,
+        requiresAuth: Bool = true
+    ) async throws {
+        var request = try makeRequest(path: path, method: method, requiresAuth: requiresAuth)
+        if let body {
+            request.httpBody = body
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        }
+        let (data, response) = try await session.data(for: request)
+        try validateNoContentResponse(data: data, response: response)
+    }
+
     private func makeRequest(path: String, method: String, requiresAuth: Bool) throws -> URLRequest {
         guard let url = URL(string: path, relativeTo: config.normalizedBaseURL)?.absoluteURL else {
             throw ApiError.invalidURL
@@ -212,6 +326,16 @@ final class ApiClient {
         }
         guard !data.isEmpty else { throw ApiError.emptyResponse }
         return try decoder.decode(T.self, from: data)
+    }
+
+    private func validateNoContentResponse(data: Data, response: URLResponse) throws {
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw ApiError.emptyResponse
+        }
+        guard (200...299).contains(httpResponse.statusCode) else {
+            let message = apiErrorMessage(from: data) ?? HTTPURLResponse.localizedString(forStatusCode: httpResponse.statusCode)
+            throw ApiError.requestFailed(httpResponse.statusCode, message)
+        }
     }
 
     private func apiErrorMessage(from data: Data) -> String? {

@@ -32,6 +32,13 @@
 		A00000000000000000000017 /* VehicleFormDraftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000118 /* VehicleFormDraftTests.swift */; };
 		A00000000000000000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000119 /* Assets.xcassets */; };
 		A00000000000000000000019 /* AppConfigDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0000000000000000000011A /* AppConfigDefaultsTests.swift */; };
+		A0000000000000000000001A /* VehicleManagementForms.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000122 /* VehicleManagementForms.swift */; };
+		A0000000000000000000001B /* VehicleManagementSections.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000123 /* VehicleManagementSections.swift */; };
+		A0000000000000000000001C /* VehicleManagementDraftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000124 /* VehicleManagementDraftTests.swift */; };
+		A0000000000000000000001D /* NotificationPermissionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000125 /* NotificationPermissionManager.swift */; };
+		A0000000000000000000001E /* LocalNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000126 /* LocalNotificationScheduler.swift */; };
+		A0000000000000000000001F /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000127 /* NotificationSettingsView.swift */; };
+		A00000000000000000000020 /* LocalNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000128 /* LocalNotificationSchedulerTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +80,13 @@
 		A0000000000000000000011A /* AppConfigDefaultsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfigDefaultsTests.swift; sourceTree = "<group>"; };
 		A00000000000000000000120 /* MyGarageRomania.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyGarageRomania.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A00000000000000000000121 /* MyGarageRomaniaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyGarageRomaniaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A00000000000000000000122 /* VehicleManagementForms.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManagementForms.swift; sourceTree = "<group>"; };
+		A00000000000000000000123 /* VehicleManagementSections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManagementSections.swift; sourceTree = "<group>"; };
+		A00000000000000000000124 /* VehicleManagementDraftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VehicleManagementDraftTests.swift; sourceTree = "<group>"; };
+		A00000000000000000000125 /* NotificationPermissionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPermissionManager.swift; sourceTree = "<group>"; };
+		A00000000000000000000126 /* LocalNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationScheduler.swift; sourceTree = "<group>"; };
+		A00000000000000000000127 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		A00000000000000000000128 /* LocalNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationSchedulerTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +138,8 @@
 				A00000000000000000000104 /* KeychainStore.swift */,
 				A00000000000000000000103 /* AppConfig.swift */,
 				A00000000000000000000102 /* Models.swift */,
+				A00000000000000000000125 /* NotificationPermissionManager.swift */,
+				A00000000000000000000126 /* LocalNotificationScheduler.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -142,6 +158,9 @@
 			children = (
 				A00000000000000000000109 /* VehicleListView.swift */,
 				A0000000000000000000010A /* VehicleDetailView.swift */,
+				A00000000000000000000123 /* VehicleManagementSections.swift */,
+				A00000000000000000000122 /* VehicleManagementForms.swift */,
+				A00000000000000000000127 /* NotificationSettingsView.swift */,
 				A00000000000000000000117 /* AddEditVehicleView.swift */,
 				A00000000000000000000108 /* VehicleViewModel.swift */,
 			);
@@ -178,6 +197,8 @@
 				A00000000000000000000115 /* ReceiptParserTests.swift */,
 				A00000000000000000000118 /* VehicleFormDraftTests.swift */,
 				A0000000000000000000011A /* AppConfigDefaultsTests.swift */,
+				A00000000000000000000124 /* VehicleManagementDraftTests.swift */,
+				A00000000000000000000128 /* LocalNotificationSchedulerTests.swift */,
 			);
 			path = MyGarageRomaniaTests;
 			sourceTree = "<group>";
@@ -295,12 +316,17 @@
 				A00000000000000000000003 /* AppConfig.swift in Sources */,
 				A00000000000000000000004 /* KeychainStore.swift in Sources */,
 				A00000000000000000000005 /* ApiClient.swift in Sources */,
+				A0000000000000000000001D /* NotificationPermissionManager.swift in Sources */,
+				A0000000000000000000001E /* LocalNotificationScheduler.swift in Sources */,
 				A00000000000000000000006 /* AuthViewModel.swift in Sources */,
 				A00000000000000000000007 /* LoginView.swift in Sources */,
 				A00000000000000000000008 /* VehicleViewModel.swift in Sources */,
 				A00000000000000000000009 /* VehicleListView.swift in Sources */,
 				A0000000000000000000000A /* VehicleDetailView.swift in Sources */,
 				A00000000000000000000016 /* AddEditVehicleView.swift in Sources */,
+				A0000000000000000000001A /* VehicleManagementForms.swift in Sources */,
+				A0000000000000000000001B /* VehicleManagementSections.swift in Sources */,
+				A0000000000000000000001F /* NotificationSettingsView.swift in Sources */,
 				A0000000000000000000000B /* ReceiptParser.swift in Sources */,
 				A0000000000000000000000C /* OCRService.swift in Sources */,
 				A0000000000000000000000D /* FuelReceiptFormView.swift in Sources */,
@@ -321,6 +347,8 @@
 				A00000000000000000000015 /* ReceiptParserTests.swift in Sources */,
 				A00000000000000000000017 /* VehicleFormDraftTests.swift in Sources */,
 				A00000000000000000000019 /* AppConfigDefaultsTests.swift in Sources */,
+				A0000000000000000000001C /* VehicleManagementDraftTests.swift in Sources */,
+				A00000000000000000000020 /* LocalNotificationSchedulerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -7,9 +7,9 @@ final class AppConfigDefaultsTests: XCTestCase {
     }
 
     #if DEBUG
-    func testDebugDefaultBaseURLUsesLocalhost() {
+    func testDebugDefaultBaseURLUsesRailwayHost() {
         XCTAssertEqual(APIBaseURLDefaults.current, APIBaseURLDefaults.development)
-        XCTAssertEqual(APIBaseURLDefaults.current, "http://localhost:8080")
+        XCTAssertEqual(APIBaseURLDefaults.current, "https://my-garage-romania-production.up.railway.app")
     }
     #endif
 }

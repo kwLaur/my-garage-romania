@@ -26,10 +26,12 @@ struct StatusBadge: View {
         switch status {
         case "OK", "VALID":
             .green
-        case "SOON", "EXPIRING_SOON", "UNKNOWN":
+        case "SOON", "EXPIRING_SOON":
             .orange
         case "OVERDUE", "EXPIRED", "URGENT":
             .red
+        case "UNKNOWN", "IGNORED":
+            .gray
         default:
             .secondary
         }

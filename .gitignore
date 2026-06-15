@@ -1,0 +1,11 @@
+.DS_Store
+.gradle/
+.idea/
+build/
+backend/build/
+backend/uploads/
+frontend/node_modules/
+frontend/dist/
+frontend/tsconfig.tsbuildinfo
+*.log
+.env

@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: my-garage-postgres
+    environment:
+      POSTGRES_DB: my_garage_romania
+      POSTGRES_USER: garage
+      POSTGRES_PASSWORD: garage
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U garage -d my_garage_romania"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: my-garage-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/my_garage_romania
+      SPRING_DATASOURCE_USERNAME: garage
+      SPRING_DATASOURCE_PASSWORD: garage
+      APP_JWT_SECRET: change-this-before-production-change-this-before-production
+      APP_DEFAULT_USER_EMAIL: admin@garage.local
+      APP_DEFAULT_USER_PASSWORD: garage123
+      APP_CORS_ALLOWED_ORIGINS: http://localhost:5173
+      APP_UPLOADS_RECEIPTS_PATH: /app/uploads/receipts
+    ports:
+      - "8080:8080"
+    volumes:
+      - receipt-uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: my-garage-frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8080
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+
+volumes:
+  postgres-data:
+  receipt-uploads:

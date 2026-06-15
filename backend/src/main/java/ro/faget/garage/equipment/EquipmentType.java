@@ -1,0 +1,5 @@
+package ro.faget.garage.equipment;
+
+public enum EquipmentType {
+    FIRST_AID_KIT, EXTINGUISHER, REFLECTIVE_VEST, WARNING_TRIANGLE, SPARE_WHEEL, JACK, COMPRESSOR, SNOW_CHAINS, OTHER
+}

@@ -187,7 +187,7 @@ struct LegalDocumentRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        DetailRow(systemImage: "doc.text.fill", title: document.type.domainDisplayName, subtitle: subtitle, trailing: trailing, onReminder: onReminder) {
+        DetailRow(systemImage: "doc.text.fill", title: LegalDocumentType.displayName(document.type), subtitle: subtitle, trailing: trailing, onReminder: onReminder) {
             onDelete()
         }
     }
@@ -232,7 +232,7 @@ struct MaintenanceSectionView: View {
                 if let next = nextMaintenance {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text(next.type.domainDisplayName)
+                            Text(MaintenanceType.displayName(next.type))
                                 .font(.title3.bold())
                             Text(maintenanceDueText(next))
                                 .font(.subheadline)
@@ -253,7 +253,7 @@ struct MaintenanceSectionView: View {
                                 vehicle: vehicle,
                                 entityType: .maintenance,
                                 entityId: item.id,
-                                itemName: item.type.domainDisplayName,
+                                itemName: MaintenanceType.displayName(item.type),
                                 dueDateString: item.nextDueDate,
                                 initialPreference: preference
                             )
@@ -349,7 +349,7 @@ struct MaintenanceRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        DetailRow(systemImage: "wrench.fill", title: item.type.domainDisplayName, subtitle: subtitle, trailing: AnyView(StatusBadge(title: "Status", status: item.status)), onReminder: onReminder) {
+        DetailRow(systemImage: "wrench.fill", title: MaintenanceType.displayName(item.type), subtitle: subtitle, trailing: AnyView(StatusBadge(title: "Status", status: item.status)), onReminder: onReminder) {
             onDelete()
         }
     }
@@ -523,7 +523,7 @@ struct ExpenseRowView: View {
     }
 
     private var subtitle: String {
-        [expense.type.domainDisplayName, expense.date, expense.description?.nilIfEmpty]
+        [ExpenseType.displayName(expense.type), expense.date, expense.description?.nilIfEmpty]
             .compactMap { $0 }
             .joined(separator: " • ")
     }
@@ -549,7 +549,7 @@ struct TireSetsSectionView: View {
                 }
 
                 if let installed = tireSets.first(where: { $0.installed }) {
-                    SummaryPill(title: "Installed", value: installed.tireType.domainDisplayName, systemImage: "checkmark.circle.fill")
+                    SummaryPill(title: "Installed", value: installed.tireType.localizedDomainLabel(namespace: "tire.type"), systemImage: "checkmark.circle.fill")
                 }
 
                 if tireSets.isEmpty {
@@ -629,13 +629,13 @@ struct TireSetRowView: View {
     }
 
     private var title: String {
-        tireSet.brandModel?.nilIfEmpty ?? tireSet.tireType.domainDisplayName
+        tireSet.brandModel?.nilIfEmpty ?? tireSet.tireType.localizedDomainLabel(namespace: "tire.type")
     }
 
     private var subtitle: String {
         [
-            tireSet.tireType.domainDisplayName,
-            tireSet.mountType.domainDisplayName,
+            tireSet.tireType.localizedDomainLabel(namespace: "tire.type"),
+            tireSet.mountType.localizedDomainLabel(namespace: "tire.mount"),
             tireSet.size?.nilIfEmpty,
             tireSet.totalKm.map { "\($0) km" }
         ]
@@ -754,12 +754,12 @@ struct EquipmentRowView: View {
     }
 
     private var title: String {
-        item.name?.nilIfEmpty ?? item.type.domainDisplayName
+        item.name?.nilIfEmpty ?? item.type.localizedDomainLabel(namespace: "equipment.type")
     }
 
     private var subtitle: String {
         [
-            item.type.domainDisplayName,
+            item.type.localizedDomainLabel(namespace: "equipment.type"),
             item.expiryDate.map { "Expires \($0)" },
             item.location?.nilIfEmpty
         ]

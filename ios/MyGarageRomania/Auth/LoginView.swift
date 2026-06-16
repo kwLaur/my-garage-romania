@@ -38,13 +38,22 @@ struct LoginView: View {
                                         ProgressView()
                                             .tint(.white)
                                     }
-                                    Text("Sign In")
+                                    Text("Login")
                                         .fontWeight(.semibold)
                                 }
                                 .frame(maxWidth: .infinity)
                             }
                             .buttonStyle(.borderedProminent)
                             .controlSize(.large)
+                            .disabled(viewModel.isLoading)
+
+                            NavigationLink {
+                                RegisterView(viewModel: AuthViewModel(apiClient: viewModel.apiClient, appState: viewModel.appState))
+                            } label: {
+                                Text("Create account")
+                                    .font(.callout.weight(.semibold))
+                                    .frame(maxWidth: .infinity)
+                            }
                             .disabled(viewModel.isLoading)
                         }
                     }
@@ -89,7 +98,7 @@ struct LoginView: View {
     }
 }
 
-private extension View {
+extension View {
     func formTextField() -> some View {
         self
             .padding(14)

@@ -11,7 +11,7 @@ struct StatusBadge: View {
                 .frame(width: 8, height: 8)
             Text(title)
                 .font(.caption.weight(.semibold))
-            Text(status.replacingOccurrences(of: "_", with: " ").capitalized)
+            Text(StatusDisplay.displayName(status))
                 .font(.caption2.weight(.medium))
                 .foregroundStyle(.secondary)
         }

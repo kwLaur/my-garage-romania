@@ -39,6 +39,10 @@
 		A0000000000000000000001E /* LocalNotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000126 /* LocalNotificationScheduler.swift */; };
 		A0000000000000000000001F /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000127 /* NotificationSettingsView.swift */; };
 		A00000000000000000000020 /* LocalNotificationSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A00000000000000000000128 /* LocalNotificationSchedulerTests.swift */; };
+		B00000000000000000000001 /* DisplayNames.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000101 /* DisplayNames.swift */; };
+		B00000000000000000000002 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000102 /* RegisterView.swift */; };
+		B00000000000000000000003 /* ChangePasswordView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000103 /* ChangePasswordView.swift */; };
+		B00000000000000000000004 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B00000000000000000000106 /* Localizable.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +91,11 @@
 		A00000000000000000000126 /* LocalNotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationScheduler.swift; sourceTree = "<group>"; };
 		A00000000000000000000127 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		A00000000000000000000128 /* LocalNotificationSchedulerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationSchedulerTests.swift; sourceTree = "<group>"; };
+		B00000000000000000000101 /* DisplayNames.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayNames.swift; sourceTree = "<group>"; };
+		B00000000000000000000102 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		B00000000000000000000103 /* ChangePasswordView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangePasswordView.swift; sourceTree = "<group>"; };
+		B00000000000000000000104 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B00000000000000000000105 /* ro */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ro; path = ro.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -122,6 +131,7 @@
 				A00000000000000000000101 /* MyGarageApp.swift */,
 				A00000000000000000000116 /* Info.plist */,
 				A00000000000000000000119 /* Assets.xcassets */,
+				B00000000000000000000106 /* Localizable.strings */,
 				A00000000000000000000042 /* Core */,
 				A00000000000000000000043 /* Auth */,
 				A00000000000000000000044 /* Vehicles */,
@@ -138,6 +148,7 @@
 				A00000000000000000000104 /* KeychainStore.swift */,
 				A00000000000000000000103 /* AppConfig.swift */,
 				A00000000000000000000102 /* Models.swift */,
+				B00000000000000000000101 /* DisplayNames.swift */,
 				A00000000000000000000125 /* NotificationPermissionManager.swift */,
 				A00000000000000000000126 /* LocalNotificationScheduler.swift */,
 			);
@@ -148,6 +159,8 @@
 			isa = PBXGroup;
 			children = (
 				A00000000000000000000107 /* LoginView.swift */,
+				B00000000000000000000102 /* RegisterView.swift */,
+				B00000000000000000000103 /* ChangePasswordView.swift */,
 				A00000000000000000000106 /* AuthViewModel.swift */,
 			);
 			path = Auth;
@@ -275,6 +288,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ro,
 				Base,
 			);
 			mainGroup = A00000000000000000000040;
@@ -294,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A00000000000000000000018 /* Assets.xcassets in Resources */,
+				B00000000000000000000004 /* Localizable.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -316,10 +331,13 @@
 				A00000000000000000000003 /* AppConfig.swift in Sources */,
 				A00000000000000000000004 /* KeychainStore.swift in Sources */,
 				A00000000000000000000005 /* ApiClient.swift in Sources */,
+				B00000000000000000000001 /* DisplayNames.swift in Sources */,
 				A0000000000000000000001D /* NotificationPermissionManager.swift in Sources */,
 				A0000000000000000000001E /* LocalNotificationScheduler.swift in Sources */,
 				A00000000000000000000006 /* AuthViewModel.swift in Sources */,
 				A00000000000000000000007 /* LoginView.swift in Sources */,
+				B00000000000000000000002 /* RegisterView.swift in Sources */,
+				B00000000000000000000003 /* ChangePasswordView.swift in Sources */,
 				A00000000000000000000008 /* VehicleViewModel.swift in Sources */,
 				A00000000000000000000009 /* VehicleListView.swift in Sources */,
 				A0000000000000000000000A /* VehicleDetailView.swift in Sources */,
@@ -361,6 +379,18 @@
 			targetProxy = A00000000000000000000030 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B00000000000000000000106 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B00000000000000000000104 /* en */,
+				B00000000000000000000105 /* ro */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		A000000000000000000000A0 /* Debug */ = {

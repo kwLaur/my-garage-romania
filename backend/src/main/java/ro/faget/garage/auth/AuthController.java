@@ -24,6 +24,11 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @PostMapping("/register")
+    LoginResponse register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
+    }
+
     @GetMapping("/me")
     UserResponse me(Authentication authentication) {
         return authService.me(authentication.getName());

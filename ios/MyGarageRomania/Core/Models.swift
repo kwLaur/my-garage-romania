@@ -5,7 +5,18 @@ struct LoginResponse: Decodable {
     let user: User
 }
 
-struct User: Decodable, Hashable {
+struct RegisterRequest: Encodable {
+    let email: String
+    let password: String
+    let displayName: String?
+}
+
+struct ChangePasswordRequest: Encodable {
+    let currentPassword: String
+    let newPassword: String
+}
+
+struct User: Codable, Hashable {
     let id: UUID?
     let email: String
     let displayName: String?
@@ -620,13 +631,7 @@ enum FuelTypeOption: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     var displayName: String {
-        switch self {
-        case .diesel: "Diesel"
-        case .gasoline: "Gasoline"
-        case .lpg: "LPG"
-        case .electric: "Electric"
-        case .other: "Other"
-        }
+        FuelTypeDisplay.displayName(rawValue)
     }
 }
 
@@ -637,7 +642,7 @@ enum LegalDocumentTypeOption: String, CaseIterable, Identifiable {
     case rovinieta = "ROVINIETA"
 
     var id: String { rawValue }
-    var displayName: String { rawValue == "ROVINIETA" ? "Rovinieta" : rawValue }
+    var displayName: String { LegalDocumentType.displayName(rawValue) }
 }
 
 enum LegalDocumentSourceOption: String, CaseIterable, Identifiable {
@@ -645,7 +650,7 @@ enum LegalDocumentSourceOption: String, CaseIterable, Identifiable {
     case cnair = "CNAIR"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.capitalized }
+    var displayName: String { rawValue.localizedDomainLabel(namespace: "source") }
 }
 
 enum MaintenanceTypeOption: String, CaseIterable, Identifiable {
@@ -657,7 +662,7 @@ enum MaintenanceTypeOption: String, CaseIterable, Identifiable {
     case coolant = "COOLANT"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.domainDisplayName }
+    var displayName: String { MaintenanceType.displayName(rawValue) }
 }
 
 enum ExpenseTypeOption: String, CaseIterable, Identifiable {
@@ -670,7 +675,7 @@ enum ExpenseTypeOption: String, CaseIterable, Identifiable {
     case other = "OTHER"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.domainDisplayName }
+    var displayName: String { ExpenseType.displayName(rawValue) }
 }
 
 enum TireTypeOption: String, CaseIterable, Identifiable {
@@ -679,7 +684,7 @@ enum TireTypeOption: String, CaseIterable, Identifiable {
     case allSeason = "ALL_SEASON"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.domainDisplayName }
+    var displayName: String { rawValue.localizedDomainLabel(namespace: "tire.type") }
 }
 
 enum TireMountTypeOption: String, CaseIterable, Identifiable {
@@ -687,7 +692,7 @@ enum TireMountTypeOption: String, CaseIterable, Identifiable {
     case onRims = "ON_RIMS"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.domainDisplayName }
+    var displayName: String { rawValue.localizedDomainLabel(namespace: "tire.mount") }
 }
 
 enum EquipmentTypeOption: String, CaseIterable, Identifiable {
@@ -702,7 +707,7 @@ enum EquipmentTypeOption: String, CaseIterable, Identifiable {
     case other = "OTHER"
 
     var id: String { rawValue }
-    var displayName: String { rawValue.domainDisplayName }
+    var displayName: String { rawValue.localizedDomainLabel(namespace: "equipment.type") }
 }
 
 enum DomainDraftValidationError: LocalizedError, Equatable {

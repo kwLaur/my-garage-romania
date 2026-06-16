@@ -66,6 +66,22 @@ final class ApiClient {
         return try await request("/api/auth/login", method: "POST", body: data, requiresAuth: false)
     }
 
+    func register(email: String, password: String, displayName: String?) async throws -> LoginResponse {
+        let body = RegisterRequest(email: email, password: password, displayName: displayName)
+        let data = try encoder.encode(body)
+        return try await request("/api/auth/register", method: "POST", body: data, requiresAuth: false)
+    }
+
+    func fetchCurrentUser() async throws -> User {
+        try await request("/api/auth/me")
+    }
+
+    func changePassword(currentPassword: String, newPassword: String) async throws {
+        let body = ChangePasswordRequest(currentPassword: currentPassword, newPassword: newPassword)
+        let data = try encoder.encode(body)
+        try await requestNoContent("/api/account/password", method: "PUT", body: data)
+    }
+
     func getVehicles() async throws -> [Vehicle] {
         try await request("/api/vehicles")
     }
@@ -227,7 +243,7 @@ final class ApiClient {
 
     func testConnection() async -> ConnectionTestResult {
         let trimmedBaseURL = config.apiBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
-        let baseURLValue = trimmedBaseURL.isEmpty ? "http://localhost:8080" : trimmedBaseURL
+        let baseURLValue = trimmedBaseURL.isEmpty ? APIBaseURLDefaults.current : trimmedBaseURL
         guard let baseURL = URL(string: baseURLValue), isValidBaseURL(baseURL) else {
             return .invalidURL
         }

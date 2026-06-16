@@ -225,7 +225,7 @@ struct MaintenanceFormView: View {
             vehicle: vehicle,
             entityType: .maintenance,
             entityId: item.id,
-            itemName: item.type.domainDisplayName,
+            itemName: MaintenanceType.displayName(item.type),
             dueDateString: item.nextDueDate,
             initialPreference: notificationPreference
         )

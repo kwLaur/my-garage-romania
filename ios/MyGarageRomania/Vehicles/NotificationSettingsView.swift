@@ -295,5 +295,5 @@ func notificationPreferenceSummary(_ preference: NotificationPreference?) -> Str
 }
 
 func legalReminderName(_ type: String) -> String {
-    type == "ROVINIETA" ? "Rovinieta" : type
+    LegalDocumentType.displayName(type)
 }

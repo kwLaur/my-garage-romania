@@ -19,9 +19,11 @@ import static ro.faget.garage.vehicle.VehicleDtos.*;
 @RequestMapping("/api/vehicles")
 public class VehicleController {
     private final VehicleService vehicleService;
+    private final ro.faget.garage.vehicle.lookup.VehicleLookupService vehicleLookupService;
 
-    public VehicleController(VehicleService vehicleService) {
+    public VehicleController(VehicleService vehicleService, ro.faget.garage.vehicle.lookup.VehicleLookupService vehicleLookupService) {
         this.vehicleService = vehicleService;
+        this.vehicleLookupService = vehicleLookupService;
     }
 
     @GetMapping
@@ -29,6 +31,13 @@ public class VehicleController {
 
     @PostMapping
     VehicleResponse create(@Valid @RequestBody VehicleRequest request) { return vehicleService.create(request); }
+
+    @PostMapping("/lookup")
+    ro.faget.garage.vehicle.lookup.VehicleLookupDtos.VehicleLookupResponse lookup(
+            @Valid @RequestBody ro.faget.garage.vehicle.lookup.VehicleLookupDtos.VehicleLookupRequest request
+    ) {
+        return vehicleLookupService.lookup(request);
+    }
 
     @GetMapping("/{id}")
     VehicleResponse get(@PathVariable UUID id) { return vehicleService.get(id); }

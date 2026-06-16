@@ -31,6 +31,17 @@ app:
   uploads:
     receipts-path: ${APP_UPLOADS_RECEIPTS_PATH:uploads/receipts}
     max-size-bytes: ${APP_UPLOADS_MAX_SIZE_BYTES:5242880}
+  integrations:
+    cnair:
+      enabled: ${APP_INTEGRATIONS_CNAIR_ENABLED:false}
+      mode: ${APP_INTEGRATIONS_CNAIR_MODE:MANUAL}
+      official-check-url: ${APP_INTEGRATIONS_CNAIR_OFFICIAL_CHECK_URL:https://www.cnadnr.ro/ro/verificare-rovinieta}
+      api-base-url: ${APP_INTEGRATIONS_CNAIR_API_BASE_URL:}
+    rar-autopass:
+      enabled: ${APP_INTEGRATIONS_RAR_AUTOPASS_ENABLED:false}
+      mode: ${APP_INTEGRATIONS_RAR_AUTOPASS_MODE:MANUAL}
+      official-url: ${APP_INTEGRATIONS_RAR_AUTOPASS_OFFICIAL_URL:https://apps.rarom.ro/autopass-client}
+      api-base-url: ${APP_INTEGRATIONS_RAR_AUTOPASS_API_BASE_URL:}
 
 springdoc:
   swagger-ui:

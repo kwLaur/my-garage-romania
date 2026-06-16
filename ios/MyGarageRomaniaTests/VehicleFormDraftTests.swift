@@ -5,7 +5,8 @@ final class VehicleFormDraftTests: XCTestCase {
     func testBuildsVehicleRequestWithTrimmedOptionalFields() throws {
         var draft = VehicleFormDraft()
         draft.name = "  Family Car  "
-        draft.licensePlate = "  B123ABC "
+        draft.licensePlate = "  b 123-abc "
+        draft.vin = " wv1zzz2hzjh012345 "
         draft.brand = " Dacia "
         draft.model = " Logan "
         draft.year = "2024"
@@ -18,6 +19,7 @@ final class VehicleFormDraftTests: XCTestCase {
 
         XCTAssertEqual(request.name, "Family Car")
         XCTAssertEqual(request.licensePlate, "B123ABC")
+        XCTAssertEqual(request.vin, "WV1ZZZ2HZJH012345")
         XCTAssertEqual(request.brand, "Dacia")
         XCTAssertEqual(request.model, "Logan")
         XCTAssertEqual(request.year, 2024)
@@ -58,6 +60,23 @@ final class VehicleFormDraftTests: XCTestCase {
 
         XCTAssertThrowsError(try draft.makeRequest(currentYear: 2026)) { error in
             XCTAssertEqual(error as? VehicleValidationError, .yearInvalid)
+        }
+    }
+
+    func testVehicleLookupValidationNormalizesInputs() throws {
+        let request = try VehicleLookupValidator.makeLookupRequest(vin: " wv1zzz2hzjh012345 ", licensePlate: " b-123 abc ")
+
+        XCTAssertEqual(request.vin, "WV1ZZZ2HZJH012345")
+        XCTAssertEqual(request.licensePlate, "B123ABC")
+    }
+
+    func testVehicleLookupValidationRejectsInvalidVin() {
+        XCTAssertThrowsError(try VehicleLookupValidator.makeLookupRequest(vin: "SHORT", licensePlate: "")) { error in
+            XCTAssertEqual(error as? VehicleValidationError, .vinLengthInvalid)
+        }
+
+        XCTAssertThrowsError(try VehicleLookupValidator.makeLookupRequest(vin: "WAUZZZ8V1Q1234567", licensePlate: "")) { error in
+            XCTAssertEqual(error as? VehicleValidationError, .vinForbiddenCharacters)
         }
     }
 }

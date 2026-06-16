@@ -29,10 +29,8 @@ struct LegalDocumentFormView: View {
                         Text(option.displayName).tag(option.rawValue)
                     }
                 }
-                TextField("Start date (YYYY-MM-DD)", text: $draft.startDate)
-                    .keyboardType(.numbersAndPunctuation)
-                TextField("End date (YYYY-MM-DD)", text: $draft.endDate)
-                    .keyboardType(.numbersAndPunctuation)
+                OptionalDatePickerRow(title: "Start Date", value: $draft.startDate, defaultEnabled: true)
+                OptionalDatePickerRow(title: "End Date", value: $draft.endDate)
                 Toggle("Ignored", isOn: $draft.ignored)
             }
 
@@ -151,8 +149,7 @@ struct MaintenanceFormView: View {
                 }
                 TextField("Last km", text: $draft.lastKm)
                     .keyboardType(.numberPad)
-                TextField("Last date (YYYY-MM-DD)", text: $draft.lastDate)
-                    .keyboardType(.numbersAndPunctuation)
+                OptionalDatePickerRow(title: "Last date", value: $draft.lastDate)
             }
 
             Section("Interval") {
@@ -263,8 +260,7 @@ struct ExpenseFormView: View {
                 }
                 TextField("Amount", text: $draft.amount)
                     .keyboardType(.decimalPad)
-                TextField("Date (YYYY-MM-DD)", text: $draft.date)
-                    .keyboardType(.numbersAndPunctuation)
+                DatePicker("Date", selection: requiredDateBinding($draft.date), displayedComponents: .date)
             }
 
             Section("Description") {
@@ -360,8 +356,7 @@ struct TireSetFormView: View {
                     .textInputAutocapitalization(.words)
                 TextField("Size", text: $draft.size)
                 TextField("DOT", text: $draft.dot)
-                TextField("Purchase date (YYYY-MM-DD)", text: $draft.purchaseDate)
-                    .keyboardType(.numbersAndPunctuation)
+                OptionalDatePickerRow(title: "Purchase date", value: $draft.purchaseDate)
                 TextField("Total km", text: $draft.totalKm)
                     .keyboardType(.numberPad)
                 TextField("Cost", text: $draft.cost)
@@ -459,10 +454,8 @@ struct EquipmentFormView: View {
             }
 
             Section("Details") {
-                TextField("Purchase date (YYYY-MM-DD)", text: $draft.purchaseDate)
-                    .keyboardType(.numbersAndPunctuation)
-                TextField("Expiry date (YYYY-MM-DD)", text: $draft.expiryDate)
-                    .keyboardType(.numbersAndPunctuation)
+                OptionalDatePickerRow(title: "Purchase date", value: $draft.purchaseDate)
+                OptionalDatePickerRow(title: "Expiry date", value: $draft.expiryDate)
                 TextField("Location", text: $draft.location)
                     .textInputAutocapitalization(.words)
                 TextField("Cost", text: $draft.cost)
@@ -533,5 +526,52 @@ private func errorSection(_ message: String?) -> some View {
             Text(message)
                 .foregroundStyle(.red)
         }
+    }
+}
+
+private struct OptionalDatePickerRow: View {
+    let title: LocalizedStringKey
+    @Binding var value: String
+    var defaultEnabled = false
+
+    @State private var enabled: Bool
+    @State private var selectedDate: Date
+
+    init(title: LocalizedStringKey, value: Binding<String>, defaultEnabled: Bool = false) {
+        self.title = title
+        self._value = value
+        self.defaultEnabled = defaultEnabled
+        let initialDate = Date.fromLocalDateString(value.wrappedValue) ?? Date()
+        self._selectedDate = State(initialValue: initialDate)
+        self._enabled = State(initialValue: defaultEnabled || !value.wrappedValue.trimmed.isEmpty)
+    }
+
+    var body: some View {
+        Toggle("Set date", isOn: $enabled)
+            .onChange(of: enabled) { _, isEnabled in
+                if isEnabled {
+                    value = Date.localDateString(from: selectedDate)
+                } else {
+                    value = ""
+                }
+            }
+
+        if enabled {
+            DatePicker(title, selection: $selectedDate, displayedComponents: .date)
+                .onChange(of: selectedDate) { _, newDate in
+                    value = Date.localDateString(from: newDate)
+                }
+                .onAppear {
+                    value = Date.localDateString(from: selectedDate)
+                }
+        }
+    }
+}
+
+private func requiredDateBinding(_ value: Binding<String>) -> Binding<Date> {
+    Binding {
+        Date.fromLocalDateString(value.wrappedValue) ?? Date()
+    } set: { newValue in
+        value.wrappedValue = Date.localDateString(from: newValue)
     }
 }

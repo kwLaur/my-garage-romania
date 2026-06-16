@@ -37,7 +37,7 @@ struct OverviewSectionView: View {
 
                 HStack(spacing: 12) {
                     SummaryPill(title: "Kilometers", value: "\(vehicle.currentKm ?? 0) km", systemImage: "gauge.with.dots.needle.50percent")
-                    SummaryPill(title: "Fuel", value: vehicle.fuelProfile?.domainDisplayName ?? "Not set", systemImage: "fuelpump.fill")
+                    SummaryPill(title: "Fuel", value: vehicle.fuelProfile?.domainDisplayName ?? NSLocalizedString("Not set", comment: ""), systemImage: "fuelpump.fill")
                 }
             }
         }
@@ -58,6 +58,7 @@ struct LegalDocumentsSectionView: View {
     let apiClient: ApiClient
     let onChanged: () -> Void
 
+    @Environment(\.openURL) private var openURL
     @State private var showingAdd = false
     @State private var addType = LegalDocumentTypeOption.rca.rawValue
     @State private var editingDocument: LegalDocument?
@@ -77,6 +78,19 @@ struct LegalDocumentsSectionView: View {
                     ForEach(LegalDocumentTypeOption.allCases) { option in
                         let document = latestDocument(for: option.rawValue)
                         StatusBadge(title: option.displayName, status: document?.status ?? "UNKNOWN")
+                    }
+                }
+
+                if latestDocument(for: LegalDocumentTypeOption.rovinieta.rawValue) == nil {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("CNAIR verification requires license plate and VIN/chassis series.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                        Button {
+                            openURL(URL(string: "https://www.cnadnr.ro/ro/verificare-rovinieta")!)
+                        } label: {
+                            Label("Open official CNAIR check", systemImage: "safari")
+                        }
                     }
                 }
 
@@ -786,17 +800,17 @@ private struct DetailSectionHeader: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Label(title, systemImage: systemImage)
+            Label(LocalizedStringKey(title), systemImage: systemImage)
                 .font(.headline)
             Spacer()
             Button(action: action) {
-                Label(addTitle, systemImage: addSystemImage)
+                Label(LocalizedStringKey(addTitle), systemImage: addSystemImage)
                     .labelStyle(.iconOnly)
                     .frame(width: 34, height: 34)
             }
             .buttonStyle(.bordered)
             .clipShape(Circle())
-            .accessibilityLabel(addTitle)
+            .accessibilityLabel(LocalizedStringKey(addTitle))
         }
     }
 }
@@ -811,7 +825,7 @@ private struct SummaryPill: View {
             Image(systemName: systemImage)
                 .foregroundStyle(.blue)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(LocalizedStringKey(title))
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(value)
@@ -832,7 +846,7 @@ private struct EmptySectionView: View {
     let systemImage: String
 
     var body: some View {
-        ContentUnavailableView(title, systemImage: systemImage)
+        ContentUnavailableView(LocalizedStringKey(title), systemImage: systemImage)
             .font(.footnote)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)

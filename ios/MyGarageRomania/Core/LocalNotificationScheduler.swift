@@ -58,6 +58,8 @@ final class LocalNotificationScheduler {
         let parts = notificationTime.split(separator: ":")
         guard
             parts.count == 2,
+            parts[0].count == 2,
+            parts[1].count == 2,
             let hour = Int(parts[0]),
             let minute = Int(parts[1]),
             (0...23).contains(hour),

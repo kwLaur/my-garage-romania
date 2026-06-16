@@ -159,6 +159,67 @@ Parts:
 
 Uploaded receipt paths are stored as relative URLs like `/uploads/receipts/<file>`. Files are stored on the backend filesystem under `uploads/receipts` locally or `/app/uploads/receipts` in Docker.
 
+## Vehicle Lookup and Romanian Providers
+
+Vehicle lookup is available at:
+
+```http
+POST /api/vehicles/lookup
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+```json
+{
+  "vin": "WV1ZZZ2HZJH012345",
+  "licensePlate": "B 123 ABC"
+}
+```
+
+The backend validates VIN values when provided:
+
+- VIN is trimmed and uppercased.
+- VIN must have exactly 17 characters.
+- VIN cannot contain `I`, `O`, or `Q`.
+
+The backend normalizes license plates for lookup by uppercasing and removing spaces and hyphens. For example, `B 123-ABC` becomes `B123ABC`.
+
+The current implementation provides a safe lookup foundation only. It returns normalized input, warnings, and official external links where automatic providers are not configured. It does not invent brand/model/year data when a reliable provider has not supplied it.
+
+### CNAIR rovinieta
+
+CNAIR official rovinieta verification requires both license plate and VIN/chassis series. This project does not scrape CNAIR, does not bypass CAPTCHA or verification codes, and does not call undocumented internal endpoints.
+
+The CNAIR provider is disabled/manual by default:
+
+```yaml
+app:
+  integrations:
+    cnair:
+      enabled: false
+      mode: MANUAL
+      official-check-url: https://www.cnadnr.ro/ro/verificare-rovinieta
+```
+
+In manual mode, the backend returns a warning and an official CNAIR link. The iOS app opens that official page for the user. Future `API` mode should be enabled only if an official/stable API contract is configured, including base URL, authentication, request/response contract, timeout behavior, and failure handling.
+
+### RAR Auto-Pass
+
+RAR Auto-Pass is the official RAR path for vehicle history/certificate. This project does not scrape RAR Auto-Pass, does not automate paid certificate flows, and does not store personal billing details.
+
+The RAR Auto-Pass provider is disabled/manual by default:
+
+```yaml
+app:
+  integrations:
+    rar-autopass:
+      enabled: false
+      mode: MANUAL
+      official-url: https://apps.rarom.ro/autopass-client
+```
+
+In manual mode, the backend returns a warning and the official RAR Auto-Pass link. The iOS app can open that official portal from vehicle lookup results. Future `API` mode should be enabled only if an official/vendor API contract is configured.
+
 ## Database
 
 Flyway migrations:
@@ -180,6 +241,7 @@ Do not use that command against data you need to keep.
 - `GET /api/health`
 - `GET /api/auth/me`
 - `GET|POST /api/vehicles`
+- `POST /api/vehicles/lookup`
 - `GET|PUT|DELETE /api/vehicles/{id}`
 - `PUT /api/vehicles/{id}/odometer`
 - `GET|POST /api/vehicles/{vehicleId}/maintenance`

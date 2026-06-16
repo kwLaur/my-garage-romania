@@ -104,6 +104,11 @@ final class ApiClient {
         return try await self.request("/api/vehicles/\(id.uuidString)", method: "PUT", body: data)
     }
 
+    func lookupVehicle(_ request: VehicleLookupRequest) async throws -> VehicleLookupResponse {
+        let data = try encoder.encode(request)
+        return try await self.request("/api/vehicles/lookup", method: "POST", body: data)
+    }
+
     func fetchAlerts() async throws -> [Alert] {
         try await request("/api/dashboard/alerts")
     }

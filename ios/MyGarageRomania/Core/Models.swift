@@ -51,6 +51,43 @@ struct VehicleRequest: Codable, Hashable {
     var active: Bool
 }
 
+struct VehicleLookupRequest: Codable, Hashable {
+    var vin: String?
+    var licensePlate: String?
+}
+
+struct VehicleLookupResponse: Codable, Hashable, Identifiable {
+    let vin: String?
+    let licensePlate: String?
+    let brand: String?
+    let model: String?
+    let year: Int?
+    let fuelProfile: String?
+    let rovinieta: VehicleLookupStatus?
+    let itp: VehicleLookupStatus?
+    let rarAutoPass: VehicleLookupStatus?
+    let warnings: [String]
+    let externalLinks: [VehicleLookupExternalLink]
+
+    var id: String {
+        "\(vin ?? "")-\(licensePlate ?? "")-\(warnings.joined(separator: "|"))"
+    }
+}
+
+struct VehicleLookupStatus: Codable, Hashable {
+    let status: String?
+    let validUntil: String?
+    let source: String?
+}
+
+struct VehicleLookupExternalLink: Codable, Hashable, Identifiable {
+    let type: String
+    let label: String
+    let url: String
+
+    var id: String { type }
+}
+
 struct VehicleFormDraft: Hashable {
     var name: String
     var licensePlate: String
@@ -78,7 +115,8 @@ struct VehicleFormDraft: Hashable {
 
     func makeRequest(currentYear: Int = Calendar.current.component(.year, from: Date())) throws -> VehicleRequest {
         let trimmedName = name.trimmed
-        let trimmedLicensePlate = licensePlate.trimmed
+        let trimmedLicensePlate = VehicleLookupValidator.normalizeLicensePlate(licensePlate) ?? ""
+        let normalizedVin = try VehicleLookupValidator.normalizeVin(vin)
         guard !trimmedName.isEmpty else {
             throw VehicleValidationError.nameRequired
         }
@@ -95,7 +133,7 @@ struct VehicleFormDraft: Hashable {
         return VehicleRequest(
             name: trimmedName,
             licensePlate: trimmedLicensePlate,
-            vin: vin.trimmed.nilIfEmpty,
+            vin: normalizedVin,
             brand: brand.trimmed.nilIfEmpty,
             model: model.trimmed.nilIfEmpty,
             year: parsedYear,
@@ -121,6 +159,8 @@ enum VehicleValidationError: LocalizedError, Equatable {
     case licensePlateRequired
     case currentKmInvalid
     case yearInvalid
+    case vinLengthInvalid
+    case vinForbiddenCharacters
 
     var errorDescription: String? {
         switch self {
@@ -132,7 +172,42 @@ enum VehicleValidationError: LocalizedError, Equatable {
             "Current kilometers must be zero or greater."
         case .yearInvalid:
             "Year must be between 1886 and next year."
+        case .vinLengthInvalid:
+            NSLocalizedString("VIN must have 17 characters", comment: "")
+        case .vinForbiddenCharacters:
+            NSLocalizedString("VIN cannot contain I, O, or Q", comment: "")
         }
+    }
+}
+
+enum VehicleLookupValidator {
+    static func normalizeVin(_ vin: String) throws -> String? {
+        let normalized = vin.trimmed.uppercased()
+        guard !normalized.isEmpty else { return nil }
+        guard normalized.count == 17 else {
+            throw VehicleValidationError.vinLengthInvalid
+        }
+        guard normalized.rangeOfCharacter(from: CharacterSet(charactersIn: "IOQ")) == nil else {
+            throw VehicleValidationError.vinForbiddenCharacters
+        }
+        return normalized
+    }
+
+    static func normalizeLicensePlate(_ licensePlate: String) -> String? {
+        let normalized = licensePlate.trimmed
+            .uppercased()
+            .replacingOccurrences(of: " ", with: "")
+            .replacingOccurrences(of: "-", with: "")
+        return normalized.nilIfEmpty
+    }
+
+    static func makeLookupRequest(vin: String, licensePlate: String) throws -> VehicleLookupRequest {
+        let normalizedVin = try normalizeVin(vin)
+        let normalizedLicensePlate = normalizeLicensePlate(licensePlate)
+        guard normalizedVin != nil || normalizedLicensePlate != nil else {
+            throw VehicleValidationError.licensePlateRequired
+        }
+        return VehicleLookupRequest(vin: normalizedVin, licensePlate: normalizedLicensePlate)
     }
 }
 
@@ -599,6 +674,14 @@ struct FuelReceiptDraft: Codable, Hashable {
 extension Date {
     static func localDateString() -> String {
         localDateFormatter.string(from: Date())
+    }
+
+    static func localDateString(from date: Date) -> String {
+        localDateFormatter.string(from: date)
+    }
+
+    static func fromLocalDateString(_ value: String) -> Date? {
+        localDateFormatter.date(from: value)
     }
 
     private static let localDateFormatter: DateFormatter = {
